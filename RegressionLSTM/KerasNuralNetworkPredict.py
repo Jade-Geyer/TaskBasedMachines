@@ -9,7 +9,7 @@ from keras_tuner import RandomSearch
 from matplotlib import pyplot as plt
 from sklearn.model_selection import train_test_split
 
-from LSTM_Regressive.DataBroker import DataBroker
+from RegressionLSTM.DataBroker import DataBroker
 
 
 class KerasNuralNetworkPredict:
@@ -22,24 +22,23 @@ class KerasNuralNetworkPredict:
         self.y_train = None
         self.X_test = None
         self.y_test = None
-        self.x_new = None
         self.model_history = None
         self.timesteps = timesteps
-        self.get_x_new_sample(self.gather_training_data())
+        self.__gather_training_data()
         self.tuner = RandomSearch(
-            self.build_model,
+            self.__build_model,
             objective='val_loss',
             max_trials=5,
             executions_per_trial=2,
             directory='Tuner',
             project_name='RageArbit')
-        self.build_tuned_model()
+        self.__build_tuned_model()
         if self.model:
             self.model.save('Keras_1Layer_A.h5')
         else:
             self.model = load_model('Keras_1Layer_A.h5')
 
-    def gather_training_data(self) -> pd.DataFrame:
+    def __gather_training_data(self) -> pd.DataFrame:
 
         # Get the training data
         db = DataBroker()
@@ -55,11 +54,11 @@ class KerasNuralNetworkPredict:
         X = []
         y = []
 
-        for i in range(self.timesteps, len(df) - 15):
+        for i in range(self.timesteps, len(df) - self.timesteps):
             X.append(df.iloc[i - self.timesteps:i, :-1].values)
 
             # create a target sample by taking X values in a segment
-            y.append(df.iloc[i + 15, -1])
+            y.append(df.iloc[i + self.timesteps, -1])
 
         # convert the lists to numpy arrays
         X = np.array(X)
@@ -72,15 +71,9 @@ class KerasNuralNetworkPredict:
         self.y_train = y_train
         self.y_test = y_test
 
-        return df
-
     # Gets a new sample for tests.
-    def get_x_new_sample(self, df) -> None:
-        x_new = df.iloc[-self.timesteps:, :-1].values
-        x_new = x_new.reshape(1, self.timesteps, x_new.shape[1])
-        self.x_new = x_new
 
-    def build_model(self, hp) -> Sequential:
+    def __build_model(self, hp) -> Sequential:
         # use hp.Choice to define the batch_size hyperparameter
         self.batch_size = hp.Choice('batch_size', values=[32, 64, 128])
         # use hp.Int to define the epochs hyperparameter
@@ -95,13 +88,13 @@ class KerasNuralNetworkPredict:
 
         # train the model
         early_stopping = EarlyStopping(monitor='val_loss', patience=2)
-        # model history may be useful to some
-        model_history = model.fit(self.X_train, self.y_train, epochs=self.epochs,
+        # model history may be useful to some, not currently used
+        self.model_history = model.fit(self.X_train, self.y_train, epochs=self.epochs,
                                   validation_data=(self.X_test, self.y_test), callbacks=[early_stopping])
         self.model = model
         return model
 
-    def build_tuned_model(self) -> None:
+    def __build_tuned_model(self) -> None:
         self.tuner.search(
             self.X_train,
             self.y_train,
@@ -110,19 +103,21 @@ class KerasNuralNetworkPredict:
             validation_data=(self.X_test, self.y_test)
         )
 
-    def get_prediction(self) -> float:
+    def get_prediction(self, X_test=None, y_test=None) -> float:
 
-        y_pred = self.model.predict(self.x_new)
-        print("PREDICTION:", y_pred)
+        if not X_test or not y_test:
+            X_test = self.X_test
+            y_test = self.y_test
 
         # evaluate the model on the test data
-        test_loss = self.model.evaluate(self.X_test, self.y_test)
+        test_loss = self.model.evaluate(X_test, y_test)
 
         # print the test loss
         print(f'Test loss: {test_loss}')
 
         # generate predictions for the test data
         y_pred = self.model.predict(self.X_test)
+        print("PREDICTIONS:\n", y_pred)
 
         errors = self.y_test - y_pred
         max_abs_error = np.max(np.abs(errors))
@@ -144,7 +139,3 @@ class KerasNuralNetworkPredict:
         print(f'Mean absolute error: {mae}')
 
         return y_pred
-
-
-k = KerasNuralNetworkPredict()
-prediction = k.get_prediction()
