@@ -2,9 +2,9 @@
 general purpose task based mls and nns
 
 
-======================
+=
 || Regression LSTM  ||
-======================
+=
  
 Purpose: periodic timeseries regression tasks
 
