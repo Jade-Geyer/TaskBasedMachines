@@ -23,9 +23,9 @@ the LSTM should self-tune and make a test prediction on your set.
 
 Note: large datasets may take an a long time. Start small and work your way up.
 
-=========================
+
 || Relevant Parameters: ||
-=========================
+=
 Timesteps: Default 15.
 
 Timesteps are relevant to your datastructure. Current implementation assumes the data is seperated 
