@@ -30,7 +30,7 @@ class KerasNuralNetworkPredict:
             max_trials=5,
             executions_per_trial=2,
             directory='Tuner',
-            project_name='RageArbit')
+            project_name='TaskBasedMachines')
         self.__build_tuned_model()
         if self.__model:
             self.__model.save('Keras_1Layer_A.h5')
