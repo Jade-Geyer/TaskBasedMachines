@@ -1,7 +1,6 @@
 import time
 
 import numpy as np
-import pandas as pd
 from keras.models import Sequential, load_model
 from keras.layers import LSTM, Dense
 from keras.callbacks import EarlyStopping
@@ -38,7 +37,7 @@ class KerasNuralNetworkPredict:
         else:
             self.model = load_model('Keras_1Layer_A.h5')
 
-    def __gather_training_data(self) -> pd.DataFrame:
+    def __gather_training_data(self) -> None:
 
         # Get the training data
         db = DataBroker()
