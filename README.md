@@ -1,6 +1,7 @@
 # TaskBasedMachines
-general purpose task based machine learning systems and neural networks.
-intented to work as jumpstarts to functionality with the included systems.
+This repo task based machine learning systems and neural networks.
+It is intented to work as jumpstarts to functionality with the included systems. 
+Each generates quasi-random data, builds it's model, and trains it.
 
 
 
