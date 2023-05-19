@@ -1,5 +1,5 @@
 # TaskBasedMachines
-This repo task based machine learning systems and neural networks.
+This repo contains several task based machine learning systems and neural networks.
 It is intented to work as jumpstarts to functionality with the included systems. 
 Each generates quasi-random data, builds it's model, and trains it.
 
