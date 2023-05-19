@@ -17,7 +17,7 @@ its training data through the DataBroker. It should be able to run out-of-the-bo
 quasi-random data that is unpredictable, thus serves as a baseline for "effectively 100% ineffective", although 
 not statistically.
  
-Once running, it uses a tuner to tune it's own hyperparameters by running trails on the given training data. Once
+Once running, it uses a tuner to tune it's own hyperparameters by running trials on the given training data. Once
 completed, it will output statistics as to it's accuracy. If given relational data in the appropriate format,
 the LSTM should self-tune and make a test prediction on your set.
 
