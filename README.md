@@ -52,3 +52,7 @@ should produce predictions.
 
 The dataset required here should be a 2d Dataframe as per normal requirements for lgb. The final column must be the target
 prediction parameter.
+
+The only relevant parameter for lgbm is the number of trials. It defaults to 100. It is an optional parameter when creating
+and instance of LightGBMModel. eg: LightGBMModel(200) will allow the tuner to run 200 trials. On smaller datasets (1000s),
+this can take a few minutes. On larger datasets, it can take much longer.
