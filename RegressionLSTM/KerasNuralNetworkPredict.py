@@ -14,17 +14,17 @@ from DataBroker.DataBroker import DataBroker
 class KerasNuralNetworkPredict:
 
     def __init__(self, timesteps=15):
-        self.model = None
-        self.batch_size = 32
-        self.epochs = 3
-        self.X_train = None
-        self.y_train = None
-        self.X_test = None
-        self.y_test = None
+        self.__model = None
+        self.__batch_size = 32
+        self.__epochs = 3
+        self.__X_train = None
+        self.__y_train = None
+        self.__X_test = None
+        self.__y_test = None
         self.model_history = None
-        self.timesteps = timesteps
+        self.__timesteps = timesteps
         self.__gather_training_data()
-        self.tuner = RandomSearch(
+        self.__tuner = RandomSearch(
             self.__build_model,
             objective='val_loss',
             max_trials=5,
@@ -32,10 +32,10 @@ class KerasNuralNetworkPredict:
             directory='Tuner',
             project_name='RageArbit')
         self.__build_tuned_model()
-        if self.model:
-            self.model.save('Keras_1Layer_A.h5')
+        if self.__model:
+            self.__model.save('Keras_1Layer_A.h5')
         else:
-            self.model = load_model('Keras_1Layer_A.h5')
+            self.__model = load_model('Keras_1Layer_A.h5')
 
     def __gather_training_data(self) -> None:
 
@@ -53,11 +53,11 @@ class KerasNuralNetworkPredict:
         X = []
         y = []
 
-        for i in range(self.timesteps, len(df) - self.timesteps):
-            X.append(df.iloc[i - self.timesteps:i, :-1].values)
+        for i in range(self.__timesteps, len(df) - self.__timesteps):
+            X.append(df.iloc[i - self.__timesteps:i, :-1].values)
 
             # create a target sample by taking X values in a segment
-            y.append(df.iloc[i + self.timesteps, -1])
+            y.append(df.iloc[i + self.__timesteps, -1])
 
         # convert the lists to numpy arrays
         X = np.array(X)
@@ -65,60 +65,60 @@ class KerasNuralNetworkPredict:
 
         # split the data into training and test sets
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
-        self.X_train = X_train
-        self.X_test = X_test
-        self.y_train = y_train
-        self.y_test = y_test
+        self.__X_train = X_train
+        self.__X_test = X_test
+        self.__y_train = y_train
+        self.__y_test = y_test
 
     # Gets a new sample for tests.
 
     def __build_model(self, hp) -> Sequential:
-        # use hp.Choice to define the batch_size hyperparameter
-        self.batch_size = hp.Choice('batch_size', values=[32, 64, 128])
-        # use hp.Int to define the epochs hyperparameter
-        self.epochs = hp.Int('epochs', min_value=10, max_value=50, step=5)
+        # use hp.Choice to define the __batch_size hyperparameter
+        self.__batch_size = hp.Choice('__batch_size', values=[32, 64, 128])
+        # use hp.Int to define the __epochs hyperparameter
+        self.__epochs = hp.Int('__epochs', min_value=10, max_value=50, step=5)
 
         model = Sequential()
-        # define the LSTM model.txt
+        # define the LSTM __model.txt
         model.add(LSTM(hp.Int('units', min_value=8, max_value=64, step=8),
-                       input_shape=(self.X_train.shape[1], self.X_train.shape[2])))
+                       input_shape=(self.__X_train.shape[1], self.__X_train.shape[2])))
         model.add(Dense(1))
         model.compile(loss='mean_squared_error', optimizer='adam')
 
-        # train the model.txt
+        # train the __model.txt
         early_stopping = EarlyStopping(monitor='val_loss', patience=2)
-        # model.txt history may be useful to some, not currently used
-        self.model_history = model.fit(self.X_train, self.y_train, epochs=self.epochs,
-                                  validation_data=(self.X_test, self.y_test), callbacks=[early_stopping])
-        self.model = model
+        # __model.txt history may be useful to some, not currently used
+        self.model_history = model.fit(self.__X_train, self.__y_train, epochs=self.__epochs,
+                                       validation_data=(self.__X_test, self.__y_test), callbacks=[early_stopping])
+        self.__model = model
         return model
 
     def __build_tuned_model(self) -> None:
-        self.tuner.search(
-            self.X_train,
-            self.y_train,
-            batch_size=self.batch_size,
-            epochs=self.epochs,
-            validation_data=(self.X_test, self.y_test)
+        self.__tuner.search(
+            self.__X_train,
+            self.__y_train,
+            batch_size=self.__batch_size,
+            epochs=self.__epochs,
+            validation_data=(self.__X_test, self.__y_test)
         )
 
     def get_prediction(self, X_test=None, y_test=None) -> float:
 
         if not X_test or not y_test:
-            X_test = self.X_test
-            y_test = self.y_test
+            X_test = self.__X_test
+            y_test = self.__y_test
 
-        # evaluate the model.txt on the test data
-        test_loss = self.model.evaluate(X_test, y_test)
+        # evaluate the __model.txt on the test data
+        test_loss = self.__model.evaluate(X_test, y_test)
 
         # print the test loss
         print(f'Test loss: {test_loss}')
 
         # generate predictions for the test data
-        y_pred = self.model.predict(self.X_test)
+        y_pred = self.__model.predict(self.__X_test)
         print("PREDICTIONS:\n", y_pred)
 
-        errors = self.y_test - y_pred
+        errors = self.__y_test - y_pred
         max_abs_error = np.max(np.abs(errors))
         print(f"Maximum absolute error: {max_abs_error}")
 
@@ -130,8 +130,8 @@ class KerasNuralNetworkPredict:
 
         # calculate performance metrics
         from sklearn.metrics import mean_squared_error, mean_absolute_error
-        mse = mean_squared_error(self.y_test, y_pred)
-        mae = mean_absolute_error(self.y_test, y_pred)
+        mse = mean_squared_error(self.__y_test, y_pred)
+        mae = mean_absolute_error(self.__y_test, y_pred)
 
         # print the performance metrics
         print(f'Mean squared error: {mse}')

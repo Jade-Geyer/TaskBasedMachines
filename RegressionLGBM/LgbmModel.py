@@ -43,12 +43,12 @@ class LightGBMModel:
 
     def __init__(self, trials=100, skip_training=False):
         self._trained_model_file_path = "TrainedModels/model.txt"
-        self.__show_plot = False
+        self.__show_plot = True
         self.__X_train = None
         self.__X_test = None
         self.__y_train = None
         self.__y_test = None
-        if os.path.isfile('model.txt'):
+        if os.path.isfile('__model.txt'):
             self.__gbm = lgb.Booster(model_file=self._trained_model_file_path)
         self.__broker = DataBroker()
         self.__training_data = self.__broker.assemble_random_training_data(1000, 15)
@@ -57,7 +57,7 @@ class LightGBMModel:
         self.__trials = trials
         if not skip_training:
             self.__train_model()
-            self.__show_plot = False
+            self.__show_plot = True
 
 
     def assign_training_data(self, training_data):
