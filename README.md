@@ -24,7 +24,7 @@ the LSTM should self-tune and make a test prediction on your set.
 Note: large datasets may take an a long time. Start small and work your way up.
 
 
-|| Relevant Parameters: ||
+|| Relevant Parameters ||
 =
 Timesteps: Default 15.
 
@@ -44,7 +44,7 @@ max_trials: Default 5.
 Defines the number of times the tuner will run. Each will run X epochs, according to your settings for that variable.
 
 
-|| RegressionLGBM: ||
+|| RegressionLGBM ||
 =
 This model self-tunes to it's given dataset. Implementation in these samples runs on the same quasi-random broker data as
 the others, thus serves as a good baseline for 'effectively ineffective'. Hook your own datasource into the broker, and it
