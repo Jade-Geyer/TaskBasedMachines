@@ -8,7 +8,7 @@ from keras_tuner import RandomSearch
 from matplotlib import pyplot as plt
 from sklearn.model_selection import train_test_split
 
-from RegressionLSTM.DataBroker import DataBroker
+from DataBroker.DataBroker import DataBroker
 
 
 class KerasNuralNetworkPredict:
@@ -79,15 +79,15 @@ class KerasNuralNetworkPredict:
         self.epochs = hp.Int('epochs', min_value=10, max_value=50, step=5)
 
         model = Sequential()
-        # define the LSTM model
+        # define the LSTM model.txt
         model.add(LSTM(hp.Int('units', min_value=8, max_value=64, step=8),
                        input_shape=(self.X_train.shape[1], self.X_train.shape[2])))
         model.add(Dense(1))
         model.compile(loss='mean_squared_error', optimizer='adam')
 
-        # train the model
+        # train the model.txt
         early_stopping = EarlyStopping(monitor='val_loss', patience=2)
-        # model history may be useful to some, not currently used
+        # model.txt history may be useful to some, not currently used
         self.model_history = model.fit(self.X_train, self.y_train, epochs=self.epochs,
                                   validation_data=(self.X_test, self.y_test), callbacks=[early_stopping])
         self.model = model
@@ -108,7 +108,7 @@ class KerasNuralNetworkPredict:
             X_test = self.X_test
             y_test = self.y_test
 
-        # evaluate the model on the test data
+        # evaluate the model.txt on the test data
         test_loss = self.model.evaluate(X_test, y_test)
 
         # print the test loss
