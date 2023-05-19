@@ -48,6 +48,11 @@ Defines the number of times the tuner will run. Each will run X epochs, accordin
 
 || RegressionLGBM ||
 =
+
+Purpose: linear timeseries regression tasks
+
+overview:
+
 This model self-tunes to it's given dataset. Implementation in these samples runs on the same quasi-random broker data as
 the others, thus serves as a good baseline for 'effectively ineffective'. Hook your own datasource into the broker, and it
 should produce predictions.
@@ -58,3 +63,8 @@ prediction parameter.
 The only relevant parameter for lgbm is the number of trials. It defaults to 100. It is an optional parameter when creating
 and instance of LightGBMModel. eg: LightGBMModel(200) will allow the tuner to run 200 trials. On smaller datasets (1000s),
 this can take a few minutes. On larger datasets, it can take much longer.
+
+
+
+
+
