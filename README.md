@@ -1,5 +1,6 @@
 # TaskBasedMachines
-general purpose task based mls and nns
+general purpose task based machine learning systems and neural networks.
+intented to work as jumpstarts to functionality with the included systems.
 
 
 
