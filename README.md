@@ -42,3 +42,13 @@ some models that need a tighter fit.
 max_trials: Default 5.
 
 Defines the number of times the tuner will run. Each will run X epochs, according to your settings for that variable.
+
+
+|| RegressionLGBM: ||
+=
+This model self-tunes to it's given dataset. Implementation in these samples runs on the same quasi-random broker data as
+the others, thus serves as a good baseline for 'effectively ineffective'. Hook your own datasource into the broker, and it
+should produce predictions.
+
+The dataset required here should be a 2d Dataframe as per normal requirements for lgb. The final column must be the target
+prediction parameter.
